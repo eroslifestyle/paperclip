@@ -211,7 +211,7 @@ const minimaxLocalAdapter: ServerAdapterModule = {
   execute: minimaxExecute,
   testEnvironment: minimaxTestEnvironment,
   models: minimaxModels,
-  supportsLocalAgentJwt: false,
+  supportsLocalAgentJwt: true,
   supportsInstructionsBundle: false,
   requiresMaterializedRuntimeSkills: false,
   agentConfigurationDoc: minimaxAgentConfigurationDoc,

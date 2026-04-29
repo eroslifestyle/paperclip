@@ -84,6 +84,11 @@ const adapterDisplayMap: Record<string, AdapterDisplayInfo> = {
     description: "Local Pi agent",
     icon: Terminal,
   },
+  minimax_local: {
+    label: "MiniMax",
+    description: "MiniMax M2.5/M2.7 worker (Python tool calling)",
+    icon: Bot,
+  },
   cursor: {
     label: "Cursor",
     description: "Local Cursor agent",
