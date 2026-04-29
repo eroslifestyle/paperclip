@@ -80,6 +80,14 @@ import {
   agentConfigurationDoc as hermesAgentConfigurationDoc,
   models as hermesModels,
 } from "hermes-paperclip-adapter";
+import {
+  execute as minimaxExecute,
+  testEnvironment as minimaxTestEnvironment,
+} from "@paperclipai/adapter-minimax-local/server";
+import {
+  agentConfigurationDoc as minimaxAgentConfigurationDoc,
+  models as minimaxModels,
+} from "@paperclipai/adapter-minimax-local";
 import { BUILTIN_ADAPTER_TYPES } from "./builtin-adapter-types.js";
 import { buildExternalAdapters } from "./plugin-loader.js";
 import { getDisabledAdapterTypes } from "../services/adapter-plugin-store.js";
@@ -196,6 +204,17 @@ const openclawGatewayAdapter: ServerAdapterModule = {
   supportsInstructionsBundle: false,
   requiresMaterializedRuntimeSkills: false,
   agentConfigurationDoc: openclawGatewayAgentConfigurationDoc,
+};
+
+const minimaxLocalAdapter: ServerAdapterModule = {
+  type: "minimax_local",
+  execute: minimaxExecute,
+  testEnvironment: minimaxTestEnvironment,
+  models: minimaxModels,
+  supportsLocalAgentJwt: false,
+  supportsInstructionsBundle: false,
+  requiresMaterializedRuntimeSkills: false,
+  agentConfigurationDoc: minimaxAgentConfigurationDoc,
 };
 
 const openCodeLocalAdapter: ServerAdapterModule = {
@@ -319,6 +338,7 @@ function registerBuiltInAdapters() {
     geminiLocalAdapter,
     openclawGatewayAdapter,
     hermesLocalAdapter,
+    minimaxLocalAdapter,
     processAdapter,
     httpAdapter,
   ]) {
