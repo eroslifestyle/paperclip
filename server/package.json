@@ -35,7 +35,7 @@
     "dev": "tsx src/index.ts",
     "dev:watch": "cross-env PAPERCLIP_MIGRATION_PROMPT=never PAPERCLIP_MIGRATION_AUTO_APPLY=true tsx ./scripts/dev-watch.ts",
     "prepare:ui-dist": "bash ../scripts/prepare-server-ui-dist.sh",
-    "build": "tsc && mkdir -p dist/onboarding-assets && cp -R src/onboarding-assets/. dist/onboarding-assets/",
+    "build": "tsc && node -e \"const fs=require('fs');const p=require('path');const s=p.join('src','onboarding-assets');const d=p.join('dist','onboarding-assets');fs.mkdirSync(d,{recursive:true});(function c(a,b){fs.readdirSync(a).forEach(f=>{const s2=p.join(a,f),d2=p.join(b,f);fs.statSync(s2).isDirectory()?c(s2,d2):fs.copyFileSync(s2,d2)})})(s,d)\"",
     "prepack": "pnpm run prepare:ui-dist",
     "postpack": "rm -rf ui-dist",
     "clean": "rm -rf dist",

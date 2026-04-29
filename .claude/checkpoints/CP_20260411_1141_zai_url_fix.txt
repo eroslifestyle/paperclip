@@ -1,0 +1,24 @@
+# CP 20260411 1138
+## Stato: 95%
+## Done
+- Fixed critical ZAI API URL bug: api.zai.chat → api.z.ai
+- Updated 3 adapter files:
+  - execute.js: ZAI_BASE_URL + endpoint path
+  - test.js: same fix
+  - index.js: doc update
+- Started server and verified live API calls working
+- Rewrote start-paperclip.sh to auto-detect actual port
+## In corso
+- Verifying server port detection works correctly
+- Testing Chrome opens on correct port
+## Bloccato
+- None
+## TODO
+- Test complete workflow after port fix
+## File modificati
+/home/vpshsqxf/.paperclip/instances/default/adapters/zai-local/dist/server/execute.js
+/home/vpshsqxf/.paperclip/instances/default/adapters/zai-local/dist/server/test.js
+/home/vpshsqxf/.paperclip/instances/default/adapters/zai-local/dist/index.js
+/home/vpshsqxf/start-paperclip.sh
+## Ripresa
+Check if paperclip server started on correct port and Chrome opened properly

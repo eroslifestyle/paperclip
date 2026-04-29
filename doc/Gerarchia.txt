@@ -1,0 +1,140 @@
+# 📜 PROMPT DEFINITIVO PER CLAUDE CODE (Percorso: `/home/vpshsqxf/.paperclip/`)
+
+Copia e incolla **esattamente** questo testo nella chat di Claude Code. Il sistema lavorerà direttamente nella directory indicata.
+
+---
+
+## 🎯 CONTESTO E OBIETTIVO
+
+Sei un **Senior AI Systems Architect** specializzato nell'estensione nativa di piattaforme di orchestrazione AI.  
+Il tuo compito è **integrare direttamente nel codebase di Paperclip AI** (situato in `/home/vpshsqxf/.paperclip/`) un sistema multi-agente gerarchico a 3 livelli, trasformando Paperclip in un motore di routing intelligente che gestisce autonomamente la seguente struttura:
+
+```text
+🧠 OPUS (Livello 1 - CEO/Architetto)
+   ↓ (Piano + Toolchain Blindata)
+🔍 SONNET 3.5 (Livello 2 - Manager/QA)
+   ↓ (Task atomici + Vincoli Tool)
+🔨 BUILDER (BigModel GLM-4.7-Flash) | ⚡ EXECUTOR (Z.AI GLM-5.1)
+```
+
+Il sistema deve diventare **nativo a Paperclip**, non un wrapper esterno. Paperclip dovrà gestire routing automatico, enforcement dei tool, loop di correzione, fallback e logging costi in modo trasparente.
+
+---
+
+## 📍 PERCORSO TARGET
+Lavora esclusivamente in:  
+`/home/vpshsqxf/.paperclip/`  
+Non creare file fuori da questa directory. Rispetta la struttura esistente di Paperclip.
+
+---
+
+## 🔑 REGOLE ARCHITETTURALI INVIOlabili (Hardcode nel sistema)
+
+1. **Solo Opus assegna i tool/plugin/skill**. Sonnet e i Worker non possono mai modificarli, aggiungerli o rimuoverli.
+2. **Sonnet è il gate obbligatorio**. Nessun output dei Worker raggiunge Opus senza validazione tecnica e verifica toolchain.
+3. **Max 3 iterazioni Worker ↔ Sonnet**. Al 4° fallimento, Sonnet scala a Opus con report strutturato.
+4. **Routing automatico per complessità**:
+   - `Semplice/Boilerplate/<200 righe` → Builder (BigModel GLM-4.7-Flash)
+   - `Complesso/Logica critica/Stato avanzato` → Executor (Z.AI GLM-5.1)
+   - `Ambiguo/Critico` → Analisi Sonnet → Escalation Opus
+5. **Zero comunicazione diretta Utente ↔ Worker**. Tutto transita per la gerarchia.
+6. **Opt-in via configurazione**: Il sistema gerarchico si attiva solo se esplicitamente abilitato nel config di Paperclip.
+
+---
+
+## 🛠️ ISTRUZIONI OPERATIVE PER CLAUDE CODE
+
+Esegui le seguenti fasi in ordine. Non saltare passaggi.
+
+### 🔍 FASE 1: MAPPATURA REALE DEL CODEBASE
+1. Esegui `ls -la /home/vpshsqxf/.paperclip/` e scansiona ricorsivamente la struttura.
+2. Identifica:
+   - Directory di configurazione agenti e modelli (`config/`, `agents/`, `models/`, `settings/`)
+   - Motore di routing/dispatch (`src/router/`, `src/dispatcher/`, `src/core/`, `agent_manager.*`)
+   - Sistema di plugin/hook/middleware (`plugins/`, `hooks/`, `middleware/`)
+   - Gestione prompt e template (`prompts/`, `templates/`, `system_messages/`)
+   - Layer API e gestione richieste (`src/api/`, `src/server/`, `routes/`)
+3. Restituisci un **Report di Mappatura** che indichi:
+   - File esistenti da estendere o sovrascrivere
+   - Punti di iniezione per il routing gerarchico
+   - Pattern architetturali di Paperclip da rispettare
+   - Eventuali conflitti o dipendenze mancanti
+
+### 🧩 FASE 2: PROGETTAZIONE INTEGRAZIONE NATIVA
+Progetta i componenti seguendo la struttura reale trovata nella Fase 1. I file target dovranno essere:
+- `config/agents/hierarchical-system.yaml` (o `.json` se Paperclip usa JSON) → Definizione agenti, ruoli, prompt, vincoli tool, budget, rate-limit
+- `src/router/hierarchical-dispatcher.ts` → Logica di routing, analisi complessità, selezione worker, enforcement toolchain
+- `src/gateways/sonnet-quality-gate.ts` → Validazione tecnica, gestione loop correzione, report a Opus
+- `src/plugins/toolchain-enforcer.ts` → Scansione output, blocco import non autorizzati, escalation violazione
+- `src/logging/agent-telemetry.ts` → Tracciamento costi, token, compliance, metriche per agente
+
+### 💻 FASE 3: IMPLEMENTAZIONE CODICE & CONFIGURAZIONE
+Per ogni file indicato:
+1. Genera il **contenuto completo** pronto per il copia-incolla
+2. Usa **TypeScript strict** con interfacce esplicite per `Task`, `Toolchain`, `ValidationReport`
+3. Aggiungi commenti che spieghino l'integrazione con i moduli esistenti di Paperclip
+4. Mantieni compatibilità con il sistema di plugin/hook nativo
+5. Implementa fallback graceful (retry, timeout, scaling a modello superiore)
+
+### 🧪 FASE 4: VALIDAZIONE E MIGRAZIONE
+Fornisci:
+- Script di test automatico (`tests/hierarchical-routing.test.ts`) che verifichi routing, blocco tool, loop max 3, logging
+- Guida di migrazione passo-passo per attivare il sistema senza breakare Paperclip
+- Comandi CLI per abilitare/disabilitare la modalità (`paperclip enable:hierarchical`, `paperclip disable:hierarchical`)
+
+---
+
+## 📦 FORMATO DI OUTPUT RICHIESTO
+
+Restituisci l'output strutturato esattamente così:
+
+```markdown
+# 📊 REPORT DI MAPPATURA PAPERCLIP (`/home/vpshsqxf/.paperclip/`)
+[Analisi struttura reale, file da modificare, punti di iniezione, pattern da rispettare, conflitti potenziali]
+
+# 📁 FILE DA CREARE/MODIFICARE
+## 1. config/agents/hierarchical-system.yaml
+[Contenuto completo]
+
+## 2. src/router/hierarchical-dispatcher.ts
+[Contenuto completo]
+
+## 3. src/gateways/sonnet-quality-gate.ts
+[Contenuto completo]
+
+## 4. src/plugins/toolchain-enforcer.ts
+[Contenuto completo]
+
+## 5. src/logging/agent-telemetry.ts
+[Contenuto completo]
+
+# 🧪 TEST AUTOMATICI
+## tests/hierarchical-routing.test.ts
+[Contenuto completo]
+
+# 🚀 GUIDA DI MIGRAZIONE & COMANDI CLI
+[Step-by-step, attivazione, verifica, rollback]
+
+# ✅ CHECKLIST DI CONFORMITÀ
+[Elenco puntato di regole architetturali verificate e integrate]
+```
+
+---
+
+## ⚠️ VINCOLI TECNICI ASSOLUTI
+- ✅ Lavora **solo** in `/home/vpshsqxf/.paperclip/`
+- ✅ Usa **solo TypeScript** e pattern già presenti in Paperclip
+- ✅ Non introdurre dipendenze esterne non necessarie
+- ✅ Mantieni retrocompatibilità: il sistema gerarchico deve essere **opt-in**
+- ✅ Tutti i prompt di sistema devono essere **esterni al codice** (caricati da config)
+- ✅ Il `toolchain-enforcer` deve operare a livello di analisi sintattica/semantica prima dell'approvazione Sonnet
+- ✅ Logging strutturato JSON per integrazione con dashboard Paperclip esistente
+
+---
+
+## 🏁 ISTRUZIONE FINALE
+
+Inizia ora con la **FASE 1: Mappatura Reale del Codebase**.  
+Esegui `ls -la /home/vpshsqxf/.paperclip/`, scansiona la struttura, identifica i punti di estensione e restituisci il **Report di Mappatura**.  
+Non procedere alla generazione del codice finché non confermo che la mappatura è corretta.  
+Attendo il tuo output.

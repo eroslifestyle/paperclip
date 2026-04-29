@@ -35,11 +35,19 @@ feedback-export-*
 
 # Editor / tool temp files
 *.tmp
+*.tmp.*
 .vscode/
 .claude/settings.local.json
 .paperclip-local/
 /.idea/
 /.agents/
+
+# Local runtime instance data (contains .env, secrets, db)
+/instances/
+
+# Local logs and debug
+*.log
+paperclip-debug.mjs
 
 # Doc maintenance cursor
 .doc-review-cursor
