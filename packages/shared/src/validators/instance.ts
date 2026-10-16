@@ -24,6 +24,13 @@ export const backupRetentionPolicySchema = z.object({
   monthlyMonths: presetSchema(MONTHLY_RETENTION_PRESETS, "monthlyMonths").default(DEFAULT_BACKUP_RETENTION.monthlyMonths),
 });
 
+export const spendGuardianAutoPauseInfoSchema = z.object({
+  triggeredAt: z.string(),
+  ratePerMinCents: z.number().nonnegative(),
+  thresholdCents: z.number().nonnegative(),
+  lookbackMinutes: z.number().int().positive(),
+}).strict();
+
 export const instanceGeneralSettingsSchema = z.object({
   censorUsernameInLogs: z.boolean().default(false),
   keyboardShortcuts: z.boolean().default(false),
@@ -31,6 +38,8 @@ export const instanceGeneralSettingsSchema = z.object({
     DEFAULT_FEEDBACK_DATA_SHARING_PREFERENCE,
   ),
   backupRetention: backupRetentionPolicySchema.default(DEFAULT_BACKUP_RETENTION),
+  globalPaused: z.boolean().optional(),
+  spendGuardianAutoPaused: spendGuardianAutoPauseInfoSchema.optional(),
 }).strict();
 
 export const patchInstanceGeneralSettingsSchema = instanceGeneralSettingsSchema.partial();

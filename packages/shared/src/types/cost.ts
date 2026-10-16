@@ -28,6 +28,28 @@ export interface CostSummary {
   utilizationPercent: number;
 }
 
+/**
+ * Real-time spend snapshot for the Spend Guardian dashboard.
+ * Aggregations across moving windows (last minute, 5 min, hour, today, month).
+ * If `companyId` is null, the snapshot is instance-wide (all companies summed).
+ */
+export interface SpendSummary {
+  companyId: string | null;
+  computedAt: string;
+  lastMinuteCents: number;
+  last5MinCents: number;
+  lastHourCents: number;
+  todayCents: number;
+  monthCents: number;
+  lastMinuteCalls: number;
+  last5MinCalls: number;
+  lastHourCalls: number;
+  todayCalls: number;
+  monthCalls: number;
+  /** Spend rate over the lookback window used by the Spend Guardian (typically last 5 min averaged). */
+  ratePerMinuteCents: number;
+}
+
 export interface CostByAgent {
   agentId: string;
   agentName: string | null;

@@ -34,6 +34,8 @@ import {
   instanceDatabaseBackupRoutes,
   type InstanceDatabaseBackupService,
 } from "./routes/instance-database-backups.js";
+import { adminSpendRoutes } from "./routes/admin-spend.js";
+import type { SpendGuardian } from "./services/spend-guardian.js";
 import { llmRoutes } from "./routes/llms.js";
 import { authRoutes } from "./routes/auth.js";
 import { assetRoutes } from "./routes/assets.js";
@@ -133,6 +135,8 @@ export async function createApp(
     pluginWorkerManager?: PluginWorkerManager;
     betterAuthHandler?: express.RequestHandler;
     resolveSession?: (req: ExpressRequest) => Promise<BetterAuthSessionResult | null>;
+    spendGuardian?: SpendGuardian;
+    spendSummaryLookbackMinutes?: number;
   },
 ) {
   const app = express();
@@ -211,6 +215,10 @@ export async function createApp(
   api.use(sidebarPreferenceRoutes(db));
   api.use(inboxDismissalRoutes(db));
   api.use(instanceSettingsRoutes(db));
+  api.use(adminSpendRoutes(db, {
+    spendGuardian: opts.spendGuardian,
+    rateLookbackMinutes: opts.spendSummaryLookbackMinutes,
+  }));
   if (opts.databaseBackupService) {
     api.use(instanceDatabaseBackupRoutes(opts.databaseBackupService));
   }

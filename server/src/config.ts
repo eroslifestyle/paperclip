@@ -85,6 +85,11 @@ export interface Config {
   feedbackExportBackendToken: string | undefined;
   heartbeatSchedulerEnabled: boolean;
   heartbeatSchedulerIntervalMs: number;
+  startupSafeMode: boolean;
+  spendGuardianEnabled: boolean;
+  spendGuardianTickIntervalMs: number;
+  spendGuardianMaxRatePerMinuteCents: number;
+  spendGuardianLookbackMinutes: number;
   companyDeletionEnabled: boolean;
   telemetryEnabled: boolean;
 }
@@ -331,6 +336,11 @@ export function loadConfig(): Config {
     feedbackExportBackendToken,
     heartbeatSchedulerEnabled: process.env.HEARTBEAT_SCHEDULER_ENABLED !== "false",
     heartbeatSchedulerIntervalMs: Math.max(10000, Number(process.env.HEARTBEAT_SCHEDULER_INTERVAL_MS) || 30000),
+    startupSafeMode: process.env.PAPERCLIP_STARTUP_SAFE_MODE !== "false",
+    spendGuardianEnabled: process.env.PAPERCLIP_SPEND_GUARDIAN_ENABLED !== "false",
+    spendGuardianTickIntervalMs: Math.max(10000, Number(process.env.PAPERCLIP_SPEND_GUARDIAN_TICK_MS) || 60000),
+    spendGuardianMaxRatePerMinuteCents: Math.max(1, Number(process.env.PAPERCLIP_SPEND_GUARDIAN_MAX_RATE_CENTS) || 50),
+    spendGuardianLookbackMinutes: Math.max(1, Number(process.env.PAPERCLIP_SPEND_GUARDIAN_LOOKBACK_MIN) || 5),
     companyDeletionEnabled,
     telemetryEnabled: fileConfig?.telemetry?.enabled ?? true,
   };

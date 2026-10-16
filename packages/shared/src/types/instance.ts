@@ -19,11 +19,20 @@ export const DEFAULT_BACKUP_RETENTION: BackupRetentionPolicy = {
   monthlyMonths: 1,
 };
 
+export interface SpendGuardianAutoPauseInfo {
+  triggeredAt: string;
+  ratePerMinCents: number;
+  thresholdCents: number;
+  lookbackMinutes: number;
+}
+
 export interface InstanceGeneralSettings {
   censorUsernameInLogs: boolean;
   keyboardShortcuts: boolean;
   feedbackDataSharingPreference: FeedbackDataSharingPreference;
   backupRetention: BackupRetentionPolicy;
+  globalPaused?: boolean;
+  spendGuardianAutoPaused?: SpendGuardianAutoPauseInfo;
 }
 
 export interface InstanceExperimentalSettings {

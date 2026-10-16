@@ -402,6 +402,7 @@ export type {
   CostByAgentModel,
   CostWindowSpendRow,
   CostByProject,
+  SpendSummary,
   FinanceEvent,
   FinanceSummary,
   FinanceByBiller,

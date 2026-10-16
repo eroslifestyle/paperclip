@@ -19,13 +19,20 @@ const DEFAULT_SINGLETON_KEY = "default";
 function normalizeGeneralSettings(raw: unknown): InstanceGeneralSettings {
   const parsed = instanceGeneralSettingsSchema.safeParse(raw ?? {});
   if (parsed.success) {
-    return {
+    const result: InstanceGeneralSettings = {
       censorUsernameInLogs: parsed.data.censorUsernameInLogs ?? false,
       keyboardShortcuts: parsed.data.keyboardShortcuts ?? false,
       feedbackDataSharingPreference:
         parsed.data.feedbackDataSharingPreference ?? DEFAULT_FEEDBACK_DATA_SHARING_PREFERENCE,
       backupRetention: parsed.data.backupRetention ?? DEFAULT_BACKUP_RETENTION,
     };
+    if (parsed.data.globalPaused !== undefined) {
+      result.globalPaused = parsed.data.globalPaused;
+    }
+    if (parsed.data.spendGuardianAutoPaused !== undefined) {
+      result.spendGuardianAutoPaused = parsed.data.spendGuardianAutoPaused;
+    }
+    return result;
   }
   return {
     censorUsernameInLogs: false,

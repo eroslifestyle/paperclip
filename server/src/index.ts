@@ -593,6 +593,13 @@ export async function startServer(): Promise<StartedServer> {
     }
   };
   const pluginWorkerManager = createPluginWorkerManager();
+  const { createSpendGuardian } = await import("./services/spend-guardian.js");
+  const spendGuardian = createSpendGuardian(db as any, logger, {
+    enabled: config.spendGuardianEnabled,
+    tickIntervalMs: config.spendGuardianTickIntervalMs,
+    maxRatePerMinuteCents: config.spendGuardianMaxRatePerMinuteCents,
+    lookbackMinutes: config.spendGuardianLookbackMinutes,
+  });
   const app = await createApp(db as any, {
     uiMode,
     serverPort: listenPort,
@@ -617,6 +624,8 @@ export async function startServer(): Promise<StartedServer> {
     betterAuthHandler,
     resolveSession,
     pluginWorkerManager,
+    spendGuardian,
+    spendSummaryLookbackMinutes: config.spendGuardianLookbackMinutes,
   });
   const server = createServer(app as unknown as Parameters<typeof createServer>[0]);
 
@@ -866,9 +875,30 @@ export async function startServer(): Promise<StartedServer> {
       resolveListen();
     });
   });
-  
+
+  if (config.startupSafeMode) {
+    try {
+      const { applyStartupSafeMode } = await import("./services/startup-safe-mode.js");
+      await applyStartupSafeMode(db, logger);
+    } catch (err) {
+      logger.error({ err }, "startup safe mode: failed to apply, agents may be active");
+    }
+  } else {
+    logger.warn(
+      "startup safe mode is DISABLED (PAPERCLIP_STARTUP_SAFE_MODE=false); agents will run on schedule",
+    );
+  }
+
+  // Spend Guardian: background loop that auto-pauses everything if spend rate exceeds threshold.
+  spendGuardian.start();
+
   {
     const shutdown = async (signal: "SIGINT" | "SIGTERM") => {
+      try {
+        spendGuardian.stop();
+      } catch (err) {
+        logger.warn({ err }, "spend guardian: stop failed during shutdown");
+      }
       const telemetryClient = getTelemetryClient();
       if (telemetryClient) {
         telemetryClient.stop();
