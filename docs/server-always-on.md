@@ -332,7 +332,7 @@ Script `pre-start-backup.sh`:
 #!/bin/bash
 BACKUP_DIR=/home/vpshsqxf/.paperclip/instances/default/data/backups
 cd /home/vpshsqxf/.paperclip/sviluppo
-pnpm paperclipai db:backup || true
+npx paperclipai db:backup || true
 # Mantieni solo ultimi 10 backup
 ls -t $BACKUP_DIR/*.sql.gz | tail -n +11 | xargs rm -f
 ```
