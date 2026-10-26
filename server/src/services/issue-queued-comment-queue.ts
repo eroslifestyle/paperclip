@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { IssueComment, IssueQueuedCommentQueue } from "@paperclipai/shared";
+import { isUuidLike, type IssueComment, type IssueQueuedCommentQueue } from "@paperclipai/shared";
 
 const QUEUE_CONTEXT_KEY = "_paperclipWakeContext";
 const QUEUE_IDS_KEY = "wakeCommentIds";
@@ -14,7 +14,8 @@ function uniqueIds(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   const seen = new Set<string>();
   return value.flatMap((candidate) => {
-    if (typeof candidate !== "string" || !candidate || seen.has(candidate)) return [];
+    // A malformed id would make the uuid column lookup throw and wedge the whole claim loop.
+    if (typeof candidate !== "string" || !isUuidLike(candidate) || seen.has(candidate)) return [];
     seen.add(candidate);
     return [candidate];
   });
