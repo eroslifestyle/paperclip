@@ -155,6 +155,14 @@ describe("parseSetupTokenPrompt", () => {
     expect(result?.prompt).toBe(SETUP_TOKEN_PROMPT);
   });
 
+  it("skips the 2.1.310 copy hint between the repeated URL lines and the prompt", () => {
+    const hint = chaSpaced("Hold Shift while selecting to use your terminal's native copy".split(" "));
+    const text = [PREAMBLE_LINE, "", CLAUDE_COM_URL, CLAUDE_COM_URL, "", hint, "", PROMPT_LINE].join("\r\r\n");
+    expect(parseSetupTokenPrompt(text)?.url).toBe(CLAUDE_COM_URL);
+    // Any other line in the same slot still fails closed.
+    expect(parseSetupTokenPrompt(text.replace(hint, "Hold Shift and paste anything"))).toBeNull();
+  });
+
   it("returns null for a wrong host", () => {
     const badHost = CLAUDE_COM_URL.replace("https://claude.com", "https://claude.example.com");
     expect(parseSetupTokenPrompt(completeOutput(badHost))).toBeNull();
