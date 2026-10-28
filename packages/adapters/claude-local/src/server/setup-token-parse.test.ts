@@ -660,6 +660,14 @@ describe("parseSetupTokenCredential", () => {
     expect(parseSetupTokenCredential(text)).toBeNull();
   });
 
+  it("accepts the 2.1.310 before-anchor with a computed validity duration", () => {
+    const anchor = chaSpaced("Your OAuth token (valid for 365 days):".split(" "));
+    const text = [anchor, "", FULL_TOKEN, "", SETUP_TOKEN_AFTER_ANCHOR].join("\r\r\n");
+    expect(parseSetupTokenCredential(text)).toBe(FULL_TOKEN);
+    const nested = ["Your OAuth token (valid for (x)):", "", FULL_TOKEN, "", SETUP_TOKEN_AFTER_ANCHOR].join("\n");
+    expect(parseSetupTokenCredential(nested)).toBeNull();
+  });
+
   it("returns null when the before-anchor is absent", () => {
     const text = [FULL_TOKEN, "", SETUP_TOKEN_AFTER_ANCHOR].join("\n");
     expect(parseSetupTokenCredential(text)).toBeNull();
