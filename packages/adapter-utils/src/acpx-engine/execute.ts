@@ -556,6 +556,11 @@ export function buildSessionKey(identity: SessionKeyIdentity, fingerprint: strin
   return `paperclip:${identity.companyId}:${identity.agentId}:${identity.taskKey}:${fingerprint}`;
 }
 
+// Re-minted on every wake by the server GitHub broker; never part of the session identity.
+const RUN_SCOPED_GITHUB_ENV_KEYS = new Set([
+  "PAPERCLIP_GITHUB_BROKER_TOKEN", "PAPERCLIP_GITHUB_BRIDGE_TOKEN", "PAPERCLIP_GITHUB_LAUNCHER_DIR",
+]);
+
 // ACPX runs inside the long-lived Paperclip server process. A local child needs
 // a small amount of host context (PATH, locale, certificate/proxy settings, and
 // provider authentication), but it must not inherit the server's complete
@@ -2033,6 +2038,9 @@ async function buildRuntime(input: {
     if (isForbiddenConfigEnvKey(key)) continue;
     if (isPaperclipRuntimeEnvKey(key) && key in env) continue;
     env[key] = value;
+    // Per-run GitHub broker credentials are re-minted every wake: forward them,
+    // but keep them out of the hash or every resume would start fresh (KRE-8247).
+    if (RUN_SCOPED_GITHUB_ENV_KEYS.has(key)) continue;
     // The server rotates run-owned scratch paths on every wake. Still forward
     // them, but only hash actual adapter settings. User-supplied temp overrides
     // are absent from tempKeysApplied and keep their compatibility protection.
@@ -2267,8 +2275,9 @@ async function buildRuntime(input: {
     // PAPERCLIP_API_KEY) into the fingerprint so a change to any forwarded value
     // invalidates a warm handle / resumable session and forces a fresh launch
     // that sources the latest env. secretManifestHash alone misses plain-value
-    // edits and same-version secret rotations. Per-wake runtime vars never enter
-    // resolvedAdapterEnv, so they don't churn the fingerprint every heartbeat.
+    // edits and same-version secret rotations. Per-wake runtime vars, scratch
+    // paths and RUN_SCOPED_GITHUB_ENV_KEYS never enter resolvedAdapterEnv, so
+    // they don't churn the fingerprint every heartbeat.
     adapterEnvHash: shortHash(resolvedAdapterEnv),
   };
   const fingerprint = buildSessionFingerprint(fingerprintIdentity);

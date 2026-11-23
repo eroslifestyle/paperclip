@@ -2136,6 +2136,24 @@ describe("shared ACPX engine runtime behavior", () => {
     expect(fp(rotatedKey)).not.toBe(fp(withKey));
   });
 
+  it("keeps the session fingerprint stable when per-run GitHub broker credentials rotate", async () => {
+    const root = await makeTempRoot();
+    const baseConfig = { agentCommand: "node ./fake-acp.js", stateDir: path.join(root, "state") };
+    const context = { taskId: "issue-1", wakeReason: "issue_assigned" };
+    const githubEnv = (n: number) => ({
+      PAPERCLIP_GITHUB_BROKER_TOKEN: `broker-${n}`,
+      PAPERCLIP_GITHUB_BRIDGE_TOKEN: `bridge-${n}`,
+      PAPERCLIP_GITHUB_LAUNCHER_DIR: `/tmp/launcher-${n}`,
+    });
+    const first = await runExecutor({ ...baseConfig, env: githubEnv(1) }, { context });
+    const second = await runExecutor({ ...baseConfig, env: githubEnv(2) }, { context });
+    const fp = (r: { result: { sessionParams?: unknown } }) =>
+      (r.result.sessionParams as { configFingerprint?: string } | undefined)?.configFingerprint;
+
+    expect(fp(first)).toBeDefined();
+    expect(fp(second)).toBe(fp(first));
+  });
+
   it("busts the session fingerprint when the referenced-project set or pinned checkout changes", async () => {
     const root = await makeTempRoot();
     const stateDir = path.join(root, "state");
